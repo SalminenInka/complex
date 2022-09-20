@@ -1,0 +1,31 @@
+###
+DELETE http://localhost:9999/connections/8d9cb3a6-dd88-4e39-9e01-9ea2137fadde
+Content-Type: application/json
+
+###
+POST http://localhost:9999/connections
+Content-Type: application/json
+
+{
+  "name": "Valtteri Lehtiman",
+  "email": "hello.lehtiman@gmail.com",
+  "address": "Perssinkatu 4"
+}
+
+###
+GET http://localhost:9999/connections
+Content-Type: application/json
+
+###
+GET http://localhost:9999/connections/8d9cb3a6-dd88-4e39-9e01-9ea2137fadde
+Content-Type: application/json
+
+###
+PUT http://localhost:9999/connections/
+Content-Type: application/json
+
+{
+  "name": "Example Person",
+  "email": "example.person@gmail.com",
+  "address": "Example Street 212"
+}

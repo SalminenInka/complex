@@ -1,0 +1,5 @@
+postgreSQL database 'connections' with parent table 'people', child table 'contacts'.
+'contacts' has foreign key people(id) as person_id.
+All events are logged into table 'events'. Includes event number, optional person_id,
+event explanation and timestamp for event.
+Big brain out. 
