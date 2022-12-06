@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "common.json",
+  "definitions": {
+    "ssn": {
+      "type": "string",
+      "title": "Social security number",
+      "maxLength": 11,
+      "pattern": "^(0[1-9]|[12][0-9]|3[01])(0[1-9]|1[0-2])[0-9][0-9][-+Aa][0-9]{3}[0-9A-FHJ-NPR-Ya-fhj-npr-y]$"
+    },
+    "lang": {
+      "type": "string",
+      "enum": ["FI", "SV", "EN"],
+      "title": "language"
+    }
+  }
+}

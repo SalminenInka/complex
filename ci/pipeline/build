@@ -1,0 +1,44 @@
+@Library('infraJenkinsLibrary') _
+
+pipeline{
+    options {
+        timeout(time: 10, unit: 'MINUTES') 
+    }
+    agent any
+    environment {
+        IMGNAME_BASE = 'complex-app'
+        VERSION="${env.BRANCH_NAME}_${env.GIT_COMMIT}"
+        IMGNAME = "${env.IMGNAME_BASE}:${env.VERSION}"
+        TAG = "${env.DOCKER_REGISTRY}/${env.IMGNAME}"
+        TAG2 = "${env.DOCKER_REGISTRY}/${env.IMGNAME_BASE}:latest"
+    }
+
+    stages {
+        stage("Build docker image"){
+            steps {
+                sh "docker image build --no-cache --pull --build-arg VERSION=${VERSION} --tag=${env.IMGNAME} -f ./docker/Dockerfile ."
+            }
+        } 
+        stage("Tag and push image") {
+            steps {
+                sh "docker image tag ${env.IMGNAME} ${env.TAG}"
+                sh "docker image tag ${env.IMGNAME} ${env.TAG2}"
+                sh "docker push ${env.TAG}"
+                sh "docker push ${env.TAG2}"
+            }
+        }
+        stage("Set build information") {
+            steps {
+                script {
+                    currentBuild.description = "Image tag:\n" + "${env.BRANCH_NAME}_${env.GIT_COMMIT}"
+                }
+            }
+        }
+    }
+    post{
+        always{
+            sendEmail();
+            cleanWs()
+        }
+    }
+}

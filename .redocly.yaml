@@ -1,0 +1,4 @@
+lint:
+  rules:
+    info-license:
+      severity: off

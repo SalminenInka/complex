@@ -1,0 +1,15 @@
+certs
+ci
+docker
+node_modules
+openapi
+test
+version-info
+.vscode
+.env
+.gitignore
+.dockerignore
+.eslintrc.js
+.redocly.yaml
+
+

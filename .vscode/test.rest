@@ -1,5 +1,5 @@
 ###
-DELETE http://localhost:9999/connections/8d9cb3a6-dd88-4e39-9e01-9ea2137fadde
+DELETE http://localhost:9999/connections/fa85977e-c042-4a77-9a74-8664c2cc3e7f
 Content-Type: application/json
 
 ###
@@ -7,9 +7,10 @@ POST http://localhost:9999/connections
 Content-Type: application/json
 
 {
-  "name": "Valtteri Lehtiman",
-  "email": "hello.lehtiman@gmail.com",
-  "address": "Perssinkatu 4"
+  "name": "Dock Ready",
+  "email": "ready.to.dock@maybe.com",
+  "shipping_address": "The docks",
+  "billing_address": ""
 }
 
 ###
@@ -17,15 +18,20 @@ GET http://localhost:9999/connections
 Content-Type: application/json
 
 ###
-GET http://localhost:9999/connections/8d9cb3a6-dd88-4e39-9e01-9ea2137fadde
+GET http://localhost:9999/connections/feea2bc0-db76-470d-9175-9bd35900b762
 Content-Type: application/json
 
 ###
-PUT http://localhost:9999/connections/
+PUT http://localhost:9999/connections/feea2bc0-db76-470d-9175-9bd35900b762
 Content-Type: application/json
 
 {
   "name": "Example Person",
-  "email": "example.person@gmail.com",
-  "address": "Example Street 212"
+  "email": "example.person@yes.com",
+  "shipping_address": "The docks",
+  "billing_address": "Free trial Street 313"
 }
+
+###
+GET http://localhost:9999/log
+Content-Type: application/json

@@ -1,0 +1,99 @@
+openapi: 3.0.3
+info:
+  title: complex-app
+  description: >-
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent congue 
+    ultricies dui, vitae aliquam ligula pharetra vitae. Nulla justo quam, posuere 
+    id eros ut, tempus luctus eros. Proin et mauris vel diam tincidunt consectetur. 
+    In fringilla congue metus, vitae porttitor metus blandit a. Pellentesque dolor 
+    lorem, ornare ut risus id, fermentum fermentum nisi. Proin ut turpis hendrerit, 
+    pellentesque nunc vitae, feugiat ex. Interdum et malesuada fames ac ante ipsum 
+    primis in faucibus. Aliquam sed lectus eros. Morbi scelerisque a lacus rutrum euismod. 
+    Nulla in odio in velit consectetur molestie a a lorem. Nulla non justo vehicula, 
+    porta nunc in, consectetur massa. Donec et mauris felis. Suspendisse in varius nisl. 
+    Cras vulputate tortor eget nisi volutpat blandit.
+  version: 1.0.0
+  contact:
+    name: inka
+    email: inka@cgi.com
+servers: [
+  {
+    url: http://lht-16-43-83.lahitapiola.fi:20000/changeme,
+    description: CI test environment
+  }
+]
+externalDocs:
+  description: External specifications
+  url: https://change.me/asap
+paths:
+  /{ssn}:
+    get:
+      security:
+        - BearerAuth: []     
+      operationId: getNonsense
+      summary: Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+      parameters:
+      - name: ssn
+        in: path
+        required: true
+        example: 1234567-1
+        schema:
+          $ref: '../schemas/request.json#/definitions/ssn'
+      - name: lang
+        description: Language code in ISO 639, FI = Finnish SV = Swedish EN = English
+        in: query
+        required: false
+        example: FI
+        schema:
+          $ref: '../schemas/request.json#/definitions/lang'          
+      - name: lt-correlationtoken
+        in: header
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/correlation-token.json#/definitions/correlationToken'
+      responses:
+        '200':
+          $ref: '#/components/responses/success'
+        '400':
+          description: Bad Param. There something wrong with input parameters.
+          content: {}
+        '401':
+          description: Unauthorized. The bearer token is missing or it's somehow inappropriate.
+          content: {}
+        '403':
+          description: Forbidden. The caller may not be in appropriate role.
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}  
+      x-codeSamples:
+        - lang: 'cURL'
+          label: 'CLI'
+          source: |
+            curl --request GET \
+            --url 'http://lht-16-43-83.lahitapiola.fi:9265/changeme/210371-162U?lang=FI' \
+            --header 'accept: application/json ' \
+            --header 'authorization: Bearer $TOKEN' \
+            --header 'lt-correlationtoken: {"originator": "API Slayer", "correlationId": "94591078-be5b-40d8-9f08-2fed9086834e"}'  
+          
+components:
+  securitySchemes:
+    BearerAuth:            # arbitrary name for the security scheme
+      description: The bearer token
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    success:
+      description: OK
+      content:
+        application/json:
+          examples: 
+            sample 1: 
+              value:
+                $ref: ./sample1.json
+          schema:
+            $ref: '../schemas/response.json#/definitions/sampleOutput'
+

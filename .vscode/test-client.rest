@@ -1,0 +1,26 @@
+### healthcheck local
+GET http://localhost:8080/status
+
+### microservices common
+# @name createToken
+POST http://lht-16-43-83.lahitapiola.fi:9316/tokens?kid=microservices-common
+Accept: application/json
+Content-Type: application/json
+
+{
+  "sub": "helen",
+  "name": "Helen Zass"
+}
+
+
+### success
+GET http://localhost:8080/changeme/210371-162U?lang=FI
+Accept: application/json
+Authorization: Bearer {{createToken.response.body.$.token}}
+LT-CorrelationToken: { "originator": "Rest Client",  "correlationId": "{{$guid}}", "transactionId": "{{$guid}}" }
+
+### success, in Docker container
+http://localhost:30000/changeme/210371-162U?lang=FI
+Accept: application/json
+Authorization: Bearer {{createToken.response.body.$.token}}
+LT-CorrelationToken: { "originator": "Rest Client",  "correlationId": "{{$guid}}", "transactionId": "{{$guid}}" }

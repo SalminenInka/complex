@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "request.json",
+  "definitions": {
+    "ssn": {
+      "$ref": "common.json#/definitions/ssn"
+    },
+    "lang": {
+      "$ref": "common.json#/definitions/lang"
+    },
+    "sampleInput": {
+      "type": "object",
+      "required": [
+        "ssn"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "ssn": { "$ref": "#/definitions/ssn" },
+        "lang": { "$ref": "#/definitions/lang" }
+      }
+    }
+  },
+    
+  "$ref": "#/definitions/sampleInput"
+}

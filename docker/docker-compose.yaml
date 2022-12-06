@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  complex-app:
+    image: registry.infra.lahitapiola.fi/complex-app:latest-ci
+    hostname: ci-complex-app-{{.Task.Slot}}
+    ports:
+      - "9500:8080"
+    environment:
+      PORT: 8080
+      NODE_ENV: production
+      DEBUG: 'app:*'
+      DISABLE_SECURITY: 'false'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 3

@@ -1,0 +1,30 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"$id": "urn:uuid:6044462b-bf76-4ec3-9fba-d319b5a59f7c",
+	"description": "Correlation Token Schema",
+	"$ref": "#/definitions/correlationToken",
+	"definitions": {
+		"uuid": {
+			"pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+			"example": "6765684c-9662-4d94-80b3-b2c608a2bc43"
+		},
+		"correlationToken": {
+			"properties": {
+				"originator": {
+					"type": "string",
+					"minLength": 3,
+					"maxLength": 80
+				},
+				"correlationId": {
+					"$ref": "#/definitions/uuid"
+				},
+				"transactionId": {
+					"$ref": "#/definitions/uuid"
+				}
+			},
+			"required": [
+				"correlationId"
+			]
+		}
+	}
+}

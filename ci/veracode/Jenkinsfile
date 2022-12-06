@@ -1,0 +1,77 @@
+@Library('infraJenkinsLibrary') _
+pipeline {
+  agent any
+  parameters {
+    string(name: 'COMMIT_ID', description: 'GIT commit ID', defaultValue: '')
+    string(name: 'SANDBOX_NAME', description: 'Do the scan in a sandbox by this name', defaultValue: "Jenkins")
+  }
+  stages {
+    stage ('Clone GIT repository') {            
+      steps {
+        script {
+          if (env.COMMIT_ID == '') {
+            currentBuild.result = 'FAILURE' 
+            error("COMMIT_ID must be defined!")
+          }
+        }
+        echo "Doing checkout for ${COMMIT_ID}"
+        checkout ([$class: 'GitSCM',
+          branches: [[name: '${COMMIT_ID}' ]],
+          userRemoteConfigs: [[
+          credentialsId: 'azure_git', 
+          url: 'LT-devtool@vs-ssh.visualstudio.com:v3/LT-devtool/Node_integration_apps/complex-app'
+          ]]])
+        }
+      }
+      stage("Zip for Veracode") {
+        steps {
+          dir (".") {
+              sh "npm ci --production"
+              sh "zip -r veracode-scan-target.zip package.json package-lock.json node_modules app.js index.js redactions.json routes"
+          }
+        }
+      }
+      stage("Start veracode scan") {
+        steps {
+          withCredentials(
+            [usernamePassword(credentialsId: 'Veracode_API_ID_and_Key', 
+              passwordVariable: 'veracode_api_key', 
+              usernameVariable: 'veracode_api_id')]
+            ) {
+            veracode(applicationName: 'complex-app', 
+              createSandbox: false, //"${CREATE_SANDBOX}", 
+              criticality: 'Low', 
+              debug: true, 
+              fileNamePattern: '', 
+              replacementPattern: '', 
+              sandboxName: "${SANDBOX_NAME}", 
+              scanExcludesPattern: '', 
+              scanIncludesPattern: '', 
+              scanName: "${COMMIT_ID}", 
+              teams: '', 
+              uploadExcludesPattern: '', 
+              uploadIncludesPattern: '** /veracode-scan-target.zip', 
+              vid: "${veracode_api_id}", 
+              vkey: "${veracode_api_key}",
+              waitForScan: true //"${WAIT_FOR_SCAN}",
+            )
+          }
+        }
+      }
+      stage("Agent based scan") {
+        steps {
+          withCredentials([string(credentialsId: 'SRCCLR_API_TOKEN', variable: 'SRCCLR_API_TOKEN')]) {
+            dir (".") {
+              // Remove zipped application created solely for previous step
+              sh "rm veracode-scan-target.zip"
+              // Request scanning only for production dependencies
+              sh "echo 'scope: production' >> srcclr.yml"
+              // Run Veracode agent based scan
+              //sh "curl -sSL  https://download.sourceclear.com/ci.sh | DEBUG=1 sh"
+              sh "curl -sSL  https://download.sourceclear.com/ci.sh | sh"
+            }
+          }
+        }
+      }        
+  }
+}

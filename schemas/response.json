@@ -1,0 +1,30 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"definitions": {
+		"sampleOutput": {
+			"type": "object",
+			"title": "Sample output",
+      "required": [
+        "socialSecurityNumber",
+        "language"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "language": {
+          "description": "Language",
+          "type": "string",
+          "enum": [
+            "Finnish",
+            "Swedish",
+            "English"
+          ]
+        },
+        "socialSecurityNumber": {
+          "description": "Social security number",
+          "$ref": "common.json#/definitions/ssn"
+        }
+      }
+    }
+  },
+  "$ref": "#/definitions/sampleOutput"
+}
